@@ -1,18 +1,18 @@
 <script>
 fetch('data.json')
-  .then(res => res.json())
-  .then(reports => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
-    const report = reports.find(r => r.id === id);
-    if (report) {
+  .then(r => r.json())
+  .then(data => {
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    const rep = data.find(r => r.id === id) || {};
+    if (rep.title) {
       document.body.innerHTML = `
-        <h1>${report.title}</h1>
-        <p>${report.details}</p>
-        <img src="${report.image}" alt="Report">
+        <h1>${rep.title}</h1>
+        <p>${rep.details}</p>
+        <img src="${rep.image}" style="max-width:100%;height:auto;">
+        <br><small>ID: ${id} | <a href="/">হোম</a></small>
       `;
-    } else {
-      document.body.innerHTML = '<h1>রিপোর্ট যাচাইকরণ</h1>';
     }
-  });
+  })
+  .catch(() => document.body.innerHTML = '<h1>রিপোর্ট যাচাইকরণ</h1>');
 </script>
