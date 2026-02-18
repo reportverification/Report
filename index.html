@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>যাচাই</title></head>
+<body style="font-family:Arial; max-width:800px; margin:50px;">
+<h1>রিপোর্ট যাচাইকরণ</h1>
+<div id="content" style="border:1px solid #ccc; padding:20px;">লোড হচ্ছে...</div>
+<script>
+fetch('data.json').then(r=>r.json()).then(d=>{
+  const id=new URLSearchParams(location.search).get('id');
+  const rep=d.find(x=>x.id===id);
+  document.getElementById('content').innerHTML=rep?
+  `<h2>${rep.title}</h2><p>${rep.details}</p><small>তারিখ: ${rep.date}</small>`:
+  '<h2 style="color:red;">ভুল QR কোড বা অবৈধ লিঙ্ক</h2>';
+});
+</script>
+</body></html>
