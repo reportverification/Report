@@ -1,1 +1,9 @@
-<img src="${rep.image}" onerror="this.src='https://via.placeholder.com/300?text=No+Image'" style="max-width:100%;">
+fetch('data.json').then(r=>r.json()).then(d=>{
+  console.log('JSON loaded:', d); // Console চেক
+  const id=new URLSearchParams(location.search).get('id');
+  const rep=d.find(x=>x.id===id);
+  console.log('Report:', rep); // Console চেক
+  document.getElementById('content').innerHTML=rep?
+  `<h2>${rep.title}</h2><img src="${rep.image}" style="max-width:100%;"><p>${rep.details}</p>`:
+  '<h2 style="color:red;">ভুল QR (check console)</h2>';
+}).catch(e=>console.error('Fetch error:', e));
