@@ -1,38 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>রিপোর্ট যাচাই</title>
-</head>
-<body style="font-family:Arial; max-width:800px; margin:50px auto; padding:20px;">
-<h1>রিপোর্ট যাচাইকরণ</h1>
-<div id="content" style="border:1px solid #ccc; padding:20px; min-height:200px;">লোড হচ্ছে...</div>
 <script>
 fetch('data.json')
-  .then(r => {
-    if (!r.ok) throw new Error('JSON 404');
-    return r.text();
-  })
-  .then(text => {
-    console.log('Raw:', text);
-    const d = JSON.parse(text);
-    const id = new URLSearchParams(location.search).get('id') || 'r001';
-    const rep = d.find(x => x.id === id);
-    if (rep) {
-      document.getElementById('content').innerHTML = `
-        <h2>${rep.title || 'কেস'}</h2>
-        ${rep.image ? `<img src="${rep.image}" style="max-width:100%; height:auto; border:1px solid #ddd; margin:10px 0;">` : ''}
-        <p>${rep.details || 'রিপোর্ট টেক্সট'}</p>
-        <small>ID: ${id}</small>
+  .then(res => res.json())
+  .then(reports => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+    const report = reports.find(r => r.id === id);
+    if (report) {
+      document.body.innerHTML = `
+        <h1>${report.title}</h1>
+        <p>${report.details}</p>
+        <img src="${report.image}" alt="Report">
       `;
     } else {
-      document.getElementById('content').innerHTML = '<h2 style="color:red;">ভুল ID। সঠিক QR স্ক্যান করুন।</h2>';
+      document.body.innerHTML = '<h1>রিপোর্ট যাচাইকরণ</h1>';
     }
-  })
-  .catch(e => {
-    console.error(e);
-    document.getElementById('content').innerHTML = '<h2 style="color:red;">JSON load error। Console চেক করুন।</h2>';
   });
 </script>
-</body>
-</html>
