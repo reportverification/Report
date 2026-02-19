@@ -1,9 +1,22 @@
-[
-  {
-    "id": "r001",
-    "title": "কেস ১২৩",
-    "details": "রিপোর্ট টেক্সট",
-    "image": "report001.jpg"
-  },
-  {
-    "
+{
+  "reports": [
+    {
+      "id": "001",
+      "title": "সিভিল কেস রিপোর্ট",
+      "caseNumber": "BD-2026-123",
+      "status": "verified",
+      "verifiedBy": "reportverification",
+      "date": "2026-02-19",
+      "isValid": true
+    },
+    {
+      "id": "002",
+      "title": "ল্যান্ড সার্ভে রিপোর্ট",
+      "caseNumber": "BD-2026-456",
+      "status": "pending",
+      "verifiedBy": null,
+      "date": "2026-02-18",
+      "isValid": false
+    }
+  ]
+}
