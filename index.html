@@ -7,7 +7,7 @@
 <style>
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #1e3c72, #2a5298);
   height: 100vh;
   display: flex;
@@ -16,66 +16,39 @@ body {
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  padding: 40px;
-  border-radius: 15px;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
   width: 400px;
   text-align: center;
-  color: white;
   box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-}
-
-h2 {
-  margin-bottom: 20px;
 }
 
 input {
   width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: none;
-  margin-bottom: 15px;
-  font-size: 16px;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
 button {
   width: 100%;
-  padding: 12px;
-  border-radius: 8px;
-  border: none;
-  background: #00c6ff;
-  color: white;
-  font-size: 16px;
+  padding: 10px;
   cursor: pointer;
-  transition: 0.3s;
+  background: #2a5298;
+  color: white;
+  border: none;
 }
 
-button:hover {
-  background: #0072ff;
-}
-
-.result {
-  margin-top: 20px;
-  font-size: 15px;
-  text-align: left;
-}
-
-.badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  display: inline-block;
-  font-weight: bold;
-}
-
-.verified {
-  background: #00e676;
-  color: black;
+img {
+  width: 100%;
+  margin-top: 15px;
+  border-radius: 8px;
 }
 
 .invalid {
-  background: #ff5252;
-  color: white;
+  color: red;
+  margin-top: 15px;
+  font-weight: bold;
 }
 </style>
 </head>
@@ -86,33 +59,32 @@ button:hover {
   <h2>Report Verification</h2>
 
   <input type="text" id="reportId" placeholder="Enter Report ID">
-  <button onclick="verifyReport()">Verify Report</button>
+  <button onclick="verifyReport()">Verify</button>
 
-  <div class="result" id="result"></div>
+  <div id="result"></div>
 </div>
 
 <script>
-async function verifyReport() {
+function verifyReport() {
   const id = document.getElementById("reportId").value.trim();
-  const response = await fetch("data.json");
-  const data = await response.json();
+  const imagePath = id + ".jpg";  // JPG ধরে নেওয়া হয়েছে
 
-  const report = data.find(item => item.id === id);
+  const img = new Image();
+  img.src = imagePath;
 
-  if (report) {
-    document.getElementById("result").innerHTML = `
-      <p><b>Name:</b> ${report.name}</p>
-      <p><b>Project:</b> ${report.project}</p>
-      <p><b>Date:</b> ${report.date}</p>
-      <p>Status: <span class="badge verified">${report.status}</span></p>
-    `;
-  } else {
+  img.onload = function() {
     document.getElementById("result").innerHTML =
-      `<p>Status: <span class="badge invalid">Invalid Report ID</span></p>`;
-  }
+      `<p style="color:green;"><b>Verified Report</b></p>
+       <img src="${imagePath}">`;
+  };
+
+  img.onerror = function() {
+    document.getElementById("result").innerHTML =
+      `<p class="invalid">Invalid Report ID</p>`;
+  };
 }
 
-// Auto verify from URL
+// URL parameter auto verify
 const urlParams = new URLSearchParams(window.location.search);
 const urlId = urlParams.get("id");
 
