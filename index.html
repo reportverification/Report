@@ -1,18 +1,1 @@
-<script>
-fetch('data.json')
-  .then(r => r.json())
-  .then(data => {
-    const params = new URLSearchParams(location.search);
-    const id = params.get('id');
-    const rep = data.find(r => r.id === id) || {};
-    if (rep.title) {
-      document.body.innerHTML = `
-        <h1>${rep.title}</h1>
-        <p>${rep.details}</p>
-        <img src="${rep.image}" style="max-width:100%;height:auto;">
-        <br><small>ID: ${id} | <a href="/">হোম</a></small>
-      `;
-    }
-  })
-  .catch(() => document.body.innerHTML = '<h1>রিপোর্ট যাচাইকরণ</h1>');
-</script>
+<script>fetch('data.json').then(r=>r.json()).then(d=>{const p=new URLSearchParams(location.search);const i=p.get('id');const rep=d.find(x=>x.id===i);document.body.innerHTML=rep.title?`<h1>${rep.title}</h1><p>${rep.details}</p><img src="${rep.image}" style="max-width:100%">`: '<h1>রিপোর্ট যাচাইকরণ</h1>';});</script>
