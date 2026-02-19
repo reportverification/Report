@@ -1,16 +1,10 @@
 [
   {
-    "id": "RPT001",
-    "name": "Abdul Karim",
-    "project": "Land Survey - Plot 23",
-    "date": "2026-02-15",
-    "status": "Verified"
-  },
-  {
-    "id": "RPT002",
-    "name": "Rahim Uddin",
-    "project": "Topographic Survey - Area B",
-    "date": "2026-02-10",
-    "status": "Verified"
+    "id": "RTP001",
+    "name": "Client Name",
+    "project": "Land Survey Report",
+    "date": "2026-02-18",
+    "status": "Verified",
+    "image": "RTP001.jpg"
   }
 ]
