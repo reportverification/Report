@@ -16,165 +16,105 @@
             justify-content: center;
         }
         .container {
-            max-width: 900px;
+            max-width: 800px;
             width: 100%;
             background: rgba(255,255,255,0.95);
             border-radius: 25px;
             padding: 40px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.2);
             text-align: center;
-            position: relative;
-            overflow: hidden;
         }
         .container::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
-            background: linear-gradient(90deg, #00c6ff, #0072ff, #00ff88, #ffaa00);
+            background: linear-gradient(90deg, #00c6ff, #0072ff, #00ff88);
+            border-radius: 25px 25px 0 0;
         }
         h1 { 
             font-size: 2.8em; 
             background: linear-gradient(45deg, #0072ff, #00c6ff);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
-        .input-group { margin: 25px 0; }
-        input[type="text"], input[type="file"] {
-            width: 300px; padding: 15px; border: 2px solid #ddd;
-            border-radius: 12px; font-size: 16px; text-align: center;
+        #idInput {
+            width: 350px; padding: 18px; border: 3px solid #ddd; border-radius: 15px;
+            font-size: 18px; text-align: center; margin-bottom: 20px;
             transition: all 0.3s;
         }
-        input:focus { border-color: #0072ff; outline: none; box-shadow: 0 0 15px rgba(0,114,255,0.3); }
-        button {
+        #idInput:focus {
+            border-color: #0072ff; outline: none; box-shadow: 0 0 20px rgba(0,114,255,0.3);
+        }
+        #verifyBtn {
             background: linear-gradient(45deg, #0072ff, #00c6ff);
-            color: white; border: none; padding: 15px 35px;
-            border-radius: 12px; font-size: 16px; font-weight: bold;
-            cursor: pointer; margin: 10px; transition: all 0.3s;
+            color: white; border: none; padding: 18px 40px; border-radius: 15px;
+            font-size: 18px; font-weight: bold; cursor: pointer; margin: 10px;
+            transition: all 0.3s;
         }
-        button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,114,255,0.4); }
-        #qrCode { margin: 20px auto; padding: 20px; background: white; border-radius: 15px; display: none; }
-        #result { margin-top: 30px; padding: 25px; border-radius: 15px; font-size: 1.2em; min-height: 100px; }
-        .success { background: rgba(0,255,136,0.2); border: 3px solid #00ff88; color: #006600; }
-        .error { background: rgba(255,68,68,0.2); border: 3px solid #ff4444; color: #cc0000; }
-        .loading { background: rgba(0,114,255,0.2); border: 3px solid #0072ff; color: #004499; }
-        .report-list { text-align: left; margin-top: 20px; }
+        #verifyBtn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0,114,255,0.4); }
+        #qrSection { 
+            background: white; margin: 30px auto; padding: 25px; border-radius: 20px;
+            max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none;
+        }
+        #result {
+            margin-top: 30px; padding: 30px; border-radius: 20px; font-size: 1.3em;
+            min-height: 120px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .success { background: rgba(0,255,136,0.3); border: 4px solid #00ff88; color: #006600; }
+        .error { background: rgba(255,68,68,0.3); border: 4px solid #ff4444; color: #cc0000; }
+        .loading { background: rgba(0,114,255,0.3); border: 4px solid #0072ff; color: #004499; }
+        .report-list {
+            text-align: left; margin-top: 25px; max-height: 300px; overflow-y: auto;
+        }
         .report-item {
-            background: white; margin: 15px 0; padding: 20px;
-            border-radius: 12px; border-left: 5px solid #0072ff;
-            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.8); margin: 12px 0; padding: 20px;
+            border-radius: 15px; border-left: 6px solid #0072ff; display: flex;
+            justify-content: space-between; align-items: center; cursor: pointer;
+            transition: all 0.3s;
         }
-        .verified { border-left-color: #00ff88 !important; }
-        .invalid { border-left-color: #ff4444 !important; }
-        @media (max-width: 768px) {
+        .report-item:hover { transform: translateX(5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .report-verified { border-left-color: #00ff88 !important; }
+        .report-invalid { border-left-color: #ff4444 !important; }
+        .status-badge {
+            padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 1em;
+            min-width: 100px;
+        }
+        .verified { background: #00ff88; color: #000; }
+        .invalid { background: #ff4444; color: #fff; }
+        @media (max-width: 600px) {
             .container { padding: 25px 20px; margin: 10px; }
-            input[type="text"], input[type="file"] { width: 100%; margin: 10px 0; }
-            h1 { font-size: 2em; }
+            #idInput { width: 100%; }
+            h1 { font-size: 2.2em; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div style="font-size: 4em; margin-bottom: 10px;">✅</div>
+        <div style="font-size: 4.5em; margin-bottom: 15px;">✅</div>
         <h1>Report Verification</h1>
         
-        <div class="input-group">
-            <input type="text" id="idInput" placeholder="রিপোর্ট ID লিখুন (যেমন: 001)" />
-            <br><button onclick="verifyByID()">ID দিয়ে Verify</button>
+        <input type="text" id="idInput" placeholder="রিপোর্ট ID লিখুন (যেমন: 001, 002)" maxlength="10" />
+        <br>
+        <button id="verifyBtn" onclick="verifyByID()">Verify করুন</button>
+        
+        <div id="qrSection">
+            <h3 style="color: #0072ff; margin-bottom: 15px;">📱 QR Code দিয়ে Verify</h3>
+            <p><strong>লিংক:</strong> <code id="qrLink" style="background:#f0f0f0;padding:5px;border-radius:5px;"></code></p>
+            <div id="qrPlaceholder" style="padding:30px;background:#f8f9fa;border:2px dashed #0072ff;border-radius:15px;margin-top:15px;">
+                QR Code এখানে আসবে (ID দিন)
+            </div>
         </div>
         
-        <div class="input-group">
-            <input type="file" id="imageInput" accept="image/*" />
-            <br><button onclick="verifyByImage()">ছবি আপলোড করে Verify</button>
-        </div>
-        
-        <div id="qrCode">
-            <h3>QR Code দিয়ে Verify করুন</h3>
-            <p>এই QR scan করুন: <code id="qrLink"></code></p>
-            <!-- QR code এখানে আসবে -->
-        </div>
-        
-        <div id="result" class="loading">লোড হচ্ছে...</div>
+        <div id="result" class="loading">JSON লোড হচ্ছে... reports.json চেক করছি</div>
     </div>
 
     <script>
         let reportsData = null;
         
-        // JSON load
+        // Enter key support
+        document.getElementById('idInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verifyByID();
+        });
+        
+        // Load JSON
         async function loadJSON() {
-            try {
-                const res = await fetch('reports.json');
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                reportsData = await res.json();
-                showAllReports();
-                document.getElementById('result').innerHTML = `✅ ${reportsData.reports?.length || 0}টি রিপোর্ট লোড হয়েছে`;
-                document.getElementById('result').className = 'success';
-            } catch(e) {
-                document.getElementById('result').innerHTML = '❌ reports.json লোড ব্যর্থ। Root চেক করুন।';
-                document.getElementById('result').className = 'error';
-            }
-        }
-        
-        // ID দিয়ে verify
-        function verifyByID() {
-            const id = document.getElementById('idInput').value.trim();
-            if (!id || !reportsData) return showError('ID লিখুন বা JSON লোড অপেক্ষা করুন');
-            
-            const report = reportsData.reports.find(r => r.id === id);
-            showReportResult(report);
-        }
-        
-        // Image upload (ID extract simulation)
-        async function verifyByImage() {
-            const fileInput = document.getElementById('imageInput');
-            if (!fileInput.files[0]) return showError('ছবি সিলেক্ট করুন');
-            
-            document.getElementById('result').innerHTML = 'ছবি প্রসেস হচ্ছে...';
-            document.getElementById('result').className = 'loading';
-            
-            // Simulate OCR - real app এ Tesseract.js ব্যবহার করবেন
-            setTimeout(() => {
-                const simulatedID = '001'; // Demo: সব image থেকে ID 001 detect
-                const report = reportsData?.reports?.find(r => r.id === simulatedID);
-                showReportResult(report, 'ছবি থেকে ID: ' + simulatedID);
-            }, 2000);
-        }
-        
-        // Result show
-        function showReportResult(report, extra = '') {
             const resultDiv = document.getElementById('result');
-            if (!report) {
-                resultDiv.innerHTML = '❌ রিপোর্ট পাওয়া যায়নি';
-                resultDiv.className = 'error';
-                return;
-            }
-            
-            const status = report.isValid ? '✅ ভেরিফায়েড' : '❌ ইনভ্যালিড';
-            resultDiv.innerHTML = `
-                <div style="font-size:1.5em; margin-bottom:15px;">${status}</div>
-                <strong>${report.title}</strong><br>
-                কেস: ${report.caseNumber} | তারিখ: ${report.date}<br>
-                ${report.verifiedBy ? 'ভেরিফায়ার: ' + report.verifiedBy : ''}<br>
-                ${extra}
-            `;
-            resultDiv.className = report.isValid ? 'success' : 'error';
-        }
-        
-        function showError(msg) {
-            document.getElementById('result').innerHTML = '❌ ' + msg;
-            document.getElementById('result').className = 'error';
-        }
-        
-        function showAllReports() {
-            if (!reportsData?.reports) return;
-            const html = reportsData.reports.map(r => 
-                `<div class="report-item ${r.isValid ? 'verified' : 'invalid'}">
-                    <div><strong>${r.id}</strong>: ${r.title} (${r.caseNumber})</div>
-                    <span>${r.isValid ? 'ভেরিফায়েড' : 'ইনভ্যালিড'}</span>
-                </div>`
-            ).join('');
-            document.getElementById('result').innerHTML += '<div class="report-list">' + html + '</div>';
-        }
-        
-        // Page load
-        loadJSON();
-    </script>
-</body>
-</html>
+            try {
