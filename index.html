@@ -1,36 +1,95 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Report Verification</title>
-  <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-      margin-top: 50px;
-    }
-    input {
-      padding: 8px;
-      width: 200px;
-    }
-    button {
-      padding: 8px 15px;
-      cursor: pointer;
-    }
-    .result {
-      margin-top: 20px;
-      font-size: 18px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Report Verification</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  padding: 40px;
+  border-radius: 15px;
+  width: 400px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  background: #00c6ff;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #0072ff;
+}
+
+.result {
+  margin-top: 20px;
+  font-size: 15px;
+  text-align: left;
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.verified {
+  background: #00e676;
+  color: black;
+}
+
+.invalid {
+  background: #ff5252;
+  color: white;
+}
+</style>
 </head>
+
 <body>
 
-<h2>Report Verification System</h2>
+<div class="card">
+  <h2>Report Verification</h2>
 
-<input type="text" id="reportId" placeholder="Enter Report ID">
-<button onclick="verifyReport()">Verify</button>
+  <input type="text" id="reportId" placeholder="Enter Report ID">
+  <button onclick="verifyReport()">Verify Report</button>
 
-<div class="result" id="result"></div>
+  <div class="result" id="result"></div>
+</div>
 
 <script>
 async function verifyReport() {
@@ -45,15 +104,15 @@ async function verifyReport() {
       <p><b>Name:</b> ${report.name}</p>
       <p><b>Project:</b> ${report.project}</p>
       <p><b>Date:</b> ${report.date}</p>
-      <p style="color:green;"><b>Status:</b> ${report.status}</p>
+      <p>Status: <span class="badge verified">${report.status}</span></p>
     `;
   } else {
     document.getElementById("result").innerHTML =
-      `<p style="color:red;"><b>Invalid Report ID</b></p>`;
+      `<p>Status: <span class="badge invalid">Invalid Report ID</span></p>`;
   }
 }
 
-// Auto verify from URL parameter
+// Auto verify from URL
 const urlParams = new URLSearchParams(window.location.search);
 const urlId = urlParams.get("id");
 
