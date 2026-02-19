@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Report Verification</title>
-
 <style>
-/* Body background - smart gradient */
+/* Smart 6-color gradient animated background */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -13,16 +12,18 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
+  background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #1dd1a1, #5f27cd, #ff9ff3);
+  background-size: 1200% 1200%;
+  animation: gradientBG 20s ease infinite;
 }
 
-/* Gradient animation */
 @keyframes gradientBG {
   0% {background-position: 0% 50%;}
-  50% {background-position: 100% 50%;}
-  100% {background-position: 0% 50%;}
+  20% {background-position: 20% 50%;}
+  40% {background-position: 40% 50%;}
+  60% {background-position: 60% 50%;}
+  80% {background-position: 80% 50%;}
+  100% {background-position: 100% 50%;}
 }
 
 /* Glass card */
@@ -31,7 +32,7 @@ body {
   backdrop-filter: blur(15px);
   padding: 40px 30px;
   border-radius: 16px;
-  width: 420px;
+  width: 450px;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   color: white;
@@ -87,17 +88,15 @@ img {
 </head>
 
 <body>
-
 <div class="card">
   <h2>Report Verification</h2>
-
   <input type="text" id="reportId" placeholder="Enter Report ID">
   <button onclick="verifyReport()">Verify</button>
-
   <div id="result"></div>
 </div>
 
 <script>
+// Flexible Verification
 async function verifyReport() {
   const id = document.getElementById("reportId").value.trim();
   const result = document.getElementById("result");
@@ -109,7 +108,6 @@ async function verifyReport() {
 
   let found = false;
 
-  // ---------- Step 1: Check data.json ----------
   try {
     const response = await fetch("data.json");
     const data = await response.json();
@@ -119,8 +117,10 @@ async function verifyReport() {
     if (report) {
       let imageHTML = "";
       if (report.image) {
+        // If images are in subfolder, include folder name in data.json
         imageHTML = `<img src="${report.image}" alt="Report Image">`;
       }
+
       result.innerHTML = `
         <p class='status' style='color:#00FF7F;'>Verified Report</p>
         <p><b>Name:</b> ${report.name || ""}</p>
@@ -131,11 +131,11 @@ async function verifyReport() {
       found = true;
       return;
     }
-  } catch (e) {
-    console.log("data.json not found or not used");
+  } catch(e) {
+    console.log("data.json not found or invalid.");
   }
 
-  // ---------- Step 2: Check image file directly ----------
+  // Direct image check fallback if no data.json match
   const extensions = [".jpg", ".jpeg", ".png"];
   for (let ext of extensions) {
     const imgPath = id + ext;
@@ -153,14 +153,11 @@ async function verifyReport() {
         }
         resolve();
       };
-
       img.onerror = function() { resolve(); };
     });
-
     if (found) return;
   }
 
-  // ---------- Step 3: Not found ----------
   if (!found) {
     result.innerHTML = "<p class='status' style='color:red;'>Invalid Report ID</p>";
   }
@@ -174,6 +171,5 @@ if (urlId) {
   verifyReport();
 }
 </script>
-
 </body>
 </html>
