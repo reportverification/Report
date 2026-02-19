@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report Verification - সঠিকতা নিশ্চিতকরণ</title>
     <style>
+        * { box-sizing: border-box; }
         body {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -12,18 +13,18 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             background-attachment: fixed;
             min-height: 100vh;
+            padding: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow-x: hidden;
         }
         .container {
-            max-width: 900px;
-            margin: 20px;
+            max-width: 1000px;
+            width: 100%;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             padding: 40px;
             text-align: center;
             position: relative;
@@ -34,104 +35,154 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            height: 5px;
+            background: linear-gradient(90deg, #00c6ff, #0072ff, #00ff88);
             border-radius: 20px 20px 0 0;
         }
         h1 {
-            font-size: 3em;
+            font-size: 2.5em;
             background: linear-gradient(45deg, #0072ff, #00c6ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin: 0 0 20px;
+            margin: 0 0 15px;
+            text-shadow: 0 2px 10px rgba(0,114,255,0.3);
         }
         #status {
-            font-size: 1.5em;
+            font-size: 1.3em;
             margin: 20px 0;
-            padding: 10px;
-            border-radius: 10px;
-            background: rgba(0,255,136,0.2);
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: bold;
+            min-height: 20px;
         }
+        .status-success { background: rgba(0,255,136,0.3); color: #006600; border: 2px solid #00ff88; }
+        .status-error { background: rgba(255,68,68,0.2); color: #cc0000; border: 2px solid #ff4444; }
+        .status-loading { background: rgba(0,114,255,0.2); color: #004499; border: 2px solid #0072ff; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.7;} }
         #reportsList {
             text-align: left;
             margin-top: 30px;
         }
         .report-item {
-            background: rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.9);
             margin: 15px 0;
-            padding: 20px;
+            padding: 25px;
             border-radius: 15px;
-            border-left: 5px solid #0072ff;
+            border-left: 6px solid #0072ff;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
         }
-        .report-verified {
-            border-left-color: #00ff88 !important;
-        }
-        .report-invalid {
-            border-left-color: #ff4444 !important;
-            background: rgba(255,68,68,0.1);
-        }
+        .report-item:hover { transform: translateY(-3px); }
+        .report-verified { border-left-color: #00ff88 !important; }
+        .report-invalid { border-left-color: #ff4444 !important; background: rgba(255,68,68,0.05); }
+        .report-pending { border-left-color: #ffaa00 !important; }
         .status-badge {
-            padding: 5px 15px;
-            border-radius: 20px;
+            padding: 8px 20px;
+            border-radius: 25px;
             font-weight: bold;
-            font-size: 0.9em;
+            font-size: 1em;
+            min-width: 120px;
         }
-        .verified { background: #00ff88; color: #000; }
-        .pending { background: #ffaa00; color: #000; }
-        .invalid { background: #ff4444; color: #fff; }
-        .loading { color: #0072ff; font-style: italic; }
-        @media (max-width: 600px) {
-            .report-item { flex-direction: column; text-align: center; }
+        .verified { background: #00ff88; color: #000; box-shadow: 0 2px 10px rgba(0,255,136,0.4); }
+        .pending { background: #ffaa00; color: #000; box-shadow: 0 2px 10px rgba(255,170,0,0.4); }
+        .invalid { background: #ff4444; color: #fff; box-shadow: 0 2px 10px rgba(255,68,68,0.4); }
+        .report-details h3 { margin: 0 0 10px; color: #0072ff; }
+        .report-details p { margin: 5px 0; opacity: 0.9; }
+        .instructions {
+            background: rgba(0,114,255,0.1);
+            border: 1px solid #0072ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            font-size: 0.95em;
+        }
+        @media (max-width: 768px) {
+            .report-item { flex-direction: column; text-align: center; gap: 15px; }
             h1 { font-size: 2em; }
+            .container { padding: 25px 20px; margin: 10px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div>✅</div>
+        <div style="font-size: 4em; margin-bottom: 10px;">✅</div>
         <h1>Report Verification</h1>
-        <div id="status" class="loading">JSON লোড হচ্ছে...</div>
+        <div id="status" class="status-loading">লোড হচ্ছে... reports.json খুঁজছি</div>
         <div id="reportsList"></div>
+        <div class="instructions">
+            <strong>সমস্যা সমাধান:</strong><br>
+            • reports.json ফাইল repo root-এ lowercase নামে রাখুন<br>
+            • Commit & push করুন<br>
+            • 2-5 মিনিট wait (Actions চেক করুন)<br>
+            • URL: https://reportverification.github.io/Report/
+        </div>
     </div>
 
     <script>
         async function loadReports() {
+            const statusDiv = document.getElementById('status');
+            const listDiv = document.getElementById('reportsList');
+            
             try {
+                statusDiv.textContent = 'reports.json লোড হচ্ছে...';
+                statusDiv.className = 'status-loading';
+                
                 const response = await fetch('reports.json');
-                if (!response.ok) throw new Error('JSON file পাওয়া যায়নি');
+                console.log('Response status:', response.status); // Debug
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: File পাওয়া যায়নি।<br>Root-এ reports.json আছে কিনা দেখুন।`);
+                }
+                
                 const data = await response.json();
+                console.log('JSON data:', data); // Debug
                 
-                const statusDiv = document.getElementById('status');
-                const listDiv = document.getElementById('reportsList');
+                if (!data.reports || !Array.isArray(data.reports)) {
+                    throw new Error('JSON format ভুল। "reports" array দরকার।');
+                }
                 
-                if (data.reports && data.reports.length > 0) {
-                    statusDiv.innerHTML = `সফলভাবে ${data.reports.length}টি রিপোর্ট লোড হয়েছে ✅`;
-                    listDiv.innerHTML = data.reports.map(report => `
-                        <div class="report-item ${report.isValid ? 'report-verified' : 'report-invalid'}">
-                            <div>
-                                <h3>${report.title}</h3>
-                                <p><strong>কেস নং:</strong> ${report.caseNumber} | <strong>তারিখ:</strong> ${report.date}</p>
+                statusDiv.textContent = `✅ সফল! ${data.reports.length}টি রিপোর্ট লোড হয়েছে`;
+                statusDiv.className = 'status-success';
+                
+                listDiv.innerHTML = data.reports.map(report => {
+                    const statusClass = report.isValid ? 'verified' : 
+                                       (report.status === 'pending' ? 'pending' : 'invalid');
+                    const itemClass = report.isValid ? 'report-verified' : 
+                                     (report.status === 'pending' ? 'report-pending' : 'report-invalid');
+                    
+                    return `
+                        <div class="report-item ${itemClass}">
+                            <div class="report-details">
+                                <h3>${report.title || 'নামহীন রিপোর্ট'}</h3>
+                                <p><strong>কেস নং:</strong> ${report.caseNumber || 'N/A'}</p>
+                                <p><strong>তারিখ:</strong> ${report.date || 'N/A'}</p>
                                 ${report.verifiedBy ? `<p><strong>ভেরিফায়ার:</strong> ${report.verifiedBy}</p>` : ''}
                             </div>
-                            <span class="status-badge ${report.isValid ? 'verified' : report.status === 'pending' ? 'pending' : 'invalid'}">
-                                ${report.isValid ? 'ভেরিফায়েড' : report.status === 'pending' ? 'পেন্ডিং' : 'ইনভ্যালিড'}
+                            <span class="status-badge ${statusClass}">
+                                ${report.isValid ? 'ভেরিফায়েড' : 
+                                  (report.status === 'pending' ? 'পেন্ডিং' : 'ইনভ্যালিড')}
                             </span>
                         </div>
-                    `).join('');
-                } else {
-                    statusDiv.innerHTML = 'কোনো রিপোর্ট পাওয়া যায়নি ❌';
-                }
+                    `;
+                }).join('');
+                
             } catch (error) {
-                document.getElementById('status').innerHTML = `ত্রুটি: ${error.message} ❌<br>reports.json file চেক করুন।`;
-                console.error('JSON Error:', error);
+                console.error('Full error:', error);
+                statusDiv.innerHTML = `❌ ত্রুটি: ${error.message}<br><small>Console চেক করুন (F12)</small>`;
+                statusDiv.className = 'status-error';
+                listDiv.innerHTML = '';
             }
         }
 
-        // Page load হলে JSON লোড করুন
-        window.onload = loadReports;
+        // Load on page ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadReports);
+        } else {
+            loadReports();
+        }
     </script>
 </body>
 </html>
