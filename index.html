@@ -28,6 +28,7 @@ input {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
+  font-size: 16px;
 }
 
 button {
@@ -37,6 +38,11 @@ button {
   background: #2a5298;
   color: white;
   border: none;
+  font-size: 16px;
+}
+
+button:hover {
+  background: #1e3c72;
 }
 
 img {
@@ -45,8 +51,7 @@ img {
   border-radius: 8px;
 }
 
-.invalid {
-  color: red;
+.status {
   margin-top: 15px;
   font-weight: bold;
 }
@@ -65,26 +70,75 @@ img {
 </div>
 
 <script>
-function verifyReport() {
+
+async function verifyReport() {
   const id = document.getElementById("reportId").value.trim();
-  const imagePath = id + ".jpg";  // JPG ধরে নেওয়া হয়েছে
+  const result = document.getElementById("result");
 
-  const img = new Image();
-  img.src = imagePath;
+  if (!id) {
+    result.innerHTML = "<p class='status' style='color:red;'>Enter Report ID</p>";
+    return;
+  }
 
-  img.onload = function() {
-    document.getElementById("result").innerHTML =
-      `<p style="color:green;"><b>Verified Report</b></p>
-       <img src="${imagePath}">`;
-  };
+  let found = false;
 
-  img.onerror = function() {
-    document.getElementById("result").innerHTML =
-      `<p class="invalid">Invalid Report ID</p>`;
-  };
+  // ---------- Step 1: Check data.json ----------
+  try {
+    const response = await fetch("data.json");
+    const data = await response.json();
+
+    const report = data.find(item => item.id === id);
+
+    if (report) {
+      result.innerHTML = `
+        <p class='status' style='color:green;'>Verified Report</p>
+        <p><b>Name:</b> ${report.name || ""}</p>
+        <p><b>Project:</b> ${report.project || ""}</p>
+        <p><b>Date:</b> ${report.date || ""}</p>
+      `;
+      found = true;
+      return;
+    }
+  } catch (e) {
+    console.log("data.json not used");
+  }
+
+  // ---------- Step 2: Check image file ----------
+  const extensions = [".jpg", ".jpeg", ".png"];
+
+  for (let ext of extensions) {
+    const imagePath = id + ext;
+    const img = new Image();
+    img.src = imagePath;
+
+    await new Promise(resolve => {
+      img.onload = function() {
+        if (!found) {
+          found = true;
+          result.innerHTML = `
+            <p class='status' style='color:green;'>Verified Report</p>
+            <img src="${imagePath}">
+          `;
+        }
+        resolve();
+      };
+
+      img.onerror = function() {
+        resolve();
+      };
+    });
+
+    if (found) return;
+  }
+
+  // ---------- Step 3: Not found ----------
+  if (!found) {
+    result.innerHTML =
+      "<p class='status' style='color:red;'>Invalid Report ID</p>";
+  }
 }
 
-// URL parameter auto verify
+// QR auto verify
 const urlParams = new URLSearchParams(window.location.search);
 const urlId = urlParams.get("id");
 
@@ -92,6 +146,7 @@ if (urlId) {
   document.getElementById("reportId").value = urlId;
   verifyReport();
 }
+
 </script>
 
 </body>
