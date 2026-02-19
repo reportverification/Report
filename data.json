@@ -1,31 +1,16 @@
-{
-  "reports": [
-    {
-      "id": "001",
-      "title": "সিভিল কেস রিপোর্ট - ল্যান্ড ডিস্পিউট",
-      "caseNumber": "BD-2026-00123",
-      "status": "verified",
-      "verifiedBy": "reportverification",
-      "date": "2026-02-19",
-      "isValid": true
-    },
-    {
-      "id": "002",
-      "title": "প্রপার্টি সার্ভে রিপোর্ট",
-      "caseNumber": "BD-2026-00456",
-      "status": "pending",
-      "verifiedBy": null,
-      "date": "2026-02-18",
-      "isValid": false
-    },
-    {
-      "id": "003",
-      "title": "কন্ট্রাক্ট ভেরিফিকেশন",
-      "caseNumber": "BD-2026-00789",
-      "status": "verified",
-      "verifiedBy": "advocate_bd",
-      "date": "2026-02-17",
-      "isValid": true
-    }
-  ]
-}
+[
+  {
+    "id": "RPT001",
+    "name": "Abdul Karim",
+    "project": "Land Survey - Plot 23",
+    "date": "2026-02-15",
+    "status": "Verified"
+  },
+  {
+    "id": "RPT002",
+    "name": "Rahim Uddin",
+    "project": "Topographic Survey - Area B",
+    "date": "2026-02-10",
+    "status": "Verified"
+  }
+]
