@@ -1,1 +1,71 @@
-<script>fetch('data.json').then(r=>r.json()).then(d=>{const p=new URLSearchParams(location.search);const i=p.get('id');const rep=d.find(x=>x.id===i);document.body.innerHTML=rep.title?`<h1>${rep.title}</h1><p>${rep.details}</p><img src="${rep.image}" style="max-width:100%">`: '<h1>রিপোর্ট যাচাইকরণ</h1>';});</script>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>রিপোর্ট যাচাইকরণ</title>
+  <meta charset="UTF-8">
+  <style>
+    body { 
+      margin:0; padding:0; font-family:'Segoe UI',Tahoma,sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+    }
+    .container { background:white; padding:40px; border-radius:20px; box-shadow:0 20px 40px rgba(0,0,0,0.1); max-width:500px; text-align:center; }
+    h1 { color:#333; margin-bottom:30px; font-size:2.2em; }
+    input[type="text"] { width:70%; padding:15px; font-size:1.1em; border:2px solid #ddd; border-radius:10px; margin-bottom:20px; text-align:center; }
+    button { background:#667eea; color:white; border:none; padding:15px 40px; font-size:1.2em; border-radius:10px; cursor:pointer; transition:background 0.3s; }
+    button:hover { background:#5a67d8; }
+    .report { text-align:left; margin-top:20px; }
+    .report img { max-width:100%; border-radius:10px; margin:20px 0; }
+    .error { color:#e53e3e; }
+  </style>
+</head>
+<body>
+  <div class="container" id="home">
+    <h1>📋 রিপোর্ট যাচাইকরণ</h1>
+    <p style="color:#666;margin-bottom:20px">আপনার রিপোর্ট ID দিন</p>
+    <input type="text" id="idInput" placeholder="যেমন: case123 বা r001" autofocus>
+    <br><button onclick="verify()">যাচাই করুন</button>
+    <p style="color:#999;font-size:0.9em;margin-top:20px">Enter চাপুন বা বাটন</p>
+  </div>
+
+  <script>
+    const homeDiv = document.getElementById('home');
+    const input = document.getElementById('idInput');
+    
+    input.addEventListener('keypress', e => { if(e.key==='Enter') verify(); });
+    
+    function verify() {
+      const id = input.value.trim();
+      if(!id) return;
+      window.location.href = `/?id=${encodeURIComponent(id)}`;
+    }
+    
+    // Auto check URL param
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlId = urlParams.get('id');
+    if(urlId) {
+      input.value = urlId;
+      fetch('./data.json')
+        .then(r => r.json())
+        .then(data => {
+          const rep = Array.isArray(data) ? data.find(r => r.id === urlId) : data[urlId] || {};
+          if (rep.title || rep.name) {
+            homeDiv.innerHTML = `
+              <div class="report">
+                <h1>${rep.title || rep.name}</h1>
+                <p>${rep.details || rep.description || ''}</p>
+                ${rep.image ? `<img src="${rep.image}" alt="রিপোর্ট">` : ''}
+                <br><button onclick="history.back()" style="background:#48bb78">← অন্য রিপোর্ট</button>
+                <small style="color:#666">ID: ${urlId}</small>
+              </div>
+            `;
+          } else {
+            homeDiv.innerHTML += '<p class="error">❌ রিপোর্ট পাওয়া যায়নি</p>';
+          }
+        }).catch(() => {
+          homeDiv.innerHTML += '<p class="error">❌ সিস্টেম লোড হয়নি</p>';
+        });
+    }
+  </script>
+</body>
+</html>
